@@ -51,8 +51,16 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
 if _hosts := os.environ.get('DJANGO_ALLOWED_HOSTS', '').strip():
     ALLOWED_HOSTS = [h.strip() for h in _hosts.split(',') if h.strip()]
+elif DEBUG:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+elif os.environ.get('RAILWAY_ENVIRONMENT'):
+    # Railway: *.up.railway.app (ведущая точка = все поддомены этой зоны)
+    ALLOWED_HOSTS = ['.up.railway.app']
+elif os.environ.get('RENDER'):
+    # Render: *.onrender.com
+    ALLOWED_HOSTS = ['.onrender.com']
 else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1'] if DEBUG else []
+    ALLOWED_HOSTS = []
 
 
 # Application definition
