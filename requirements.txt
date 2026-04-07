@@ -1,0 +1,10 @@
+Django==6.0.3
+dj-database-url==2.3.0
+gunicorn==23.0.0
+whitenoise==6.11.0
+djangorestframework==3.16.1
+djangorestframework-simplejwt==5.5.1
+drf-spectacular==0.29.0
+pydantic==2.12.5
+SQLAlchemy==2.0.44
+psycopg2-binary==2.9.10
