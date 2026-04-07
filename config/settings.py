@@ -49,16 +49,24 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
+def _is_railway() -> bool:
+    return bool(
+        os.environ.get('RAILWAY_ENVIRONMENT')
+        or os.environ.get('RAILWAY_SERVICE_NAME')
+        or os.environ.get('RAILWAY_PROJECT_ID')
+    )
+
+
 if _hosts := os.environ.get('DJANGO_ALLOWED_HOSTS', '').strip():
     ALLOWED_HOSTS = [h.strip() for h in _hosts.split(',') if h.strip()]
-elif DEBUG:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-elif os.environ.get('RAILWAY_ENVIRONMENT'):
-    # Railway: *.up.railway.app (ведущая точка = все поддомены этой зоны)
+elif _is_railway():
+    # Railway: *.up.railway.app (ведущая точка = поддомены зоны). До DEBUG: иначе при DEBUG=True
+    # по умолчанию оставались только localhost и хост Railway отклонялся.
     ALLOWED_HOSTS = ['.up.railway.app']
 elif os.environ.get('RENDER'):
-    # Render: *.onrender.com
     ALLOWED_HOSTS = ['.onrender.com']
+elif DEBUG:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 else:
     ALLOWED_HOSTS = []
 
